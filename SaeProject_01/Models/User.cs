@@ -12,6 +12,7 @@ namespace SaeProject_01.Models
         public string UserName { get; set; }
         public string Passwort { get; set; }
 
+        // Konstruktor, Username wird gesetz Passwort wird gehasht
         public User(string UserName, string Passwort, bool Hashed)
         {
             if(Hashed)
@@ -26,31 +27,23 @@ namespace SaeProject_01.Models
             }
         }
 
+        // Hash Passwort mit SHA512 für sichere Speicherung in Datenbank
         private string HashPasswort(string Passwort)
         {
-            SHA512Managed shaEncoder = new SHA512Managed();
-            byte[] clearBytes = Encoding.ASCII.GetBytes(Passwort);
-            byte[] codedBytes = shaEncoder.ComputeHash(clearBytes);
-            string hash = null;
-            foreach(byte b in codedBytes)
-            {
-                hash += String.Format("{0:x2}", b);
-            }
-            return hash;
+            var shaEncoder = new SHA512Managed();
+            var clearBytes = Encoding.ASCII.GetBytes(Passwort);
+            var codedBytes = shaEncoder.ComputeHash(clearBytes);
+            return codedBytes.Aggregate<byte, string>(null, (current, b) => current + $"{b:x2}");
         }
 
+        //Checkt ob Username und PasswortHash von zwei Usern übereinstimmen
         public bool checkUser(User otherUser)
         {
             if(otherUser == null)
             {
                 return false;
             }
-            if(otherUser.UserName.Equals(this.UserName) && otherUser.Passwort.Equals(this.Passwort))
-            {
-                return true;
-            }
-
-            return false;
+            return otherUser.UserName.Equals(this.UserName) && otherUser.Passwort.Equals(this.Passwort);
         }
     }
 }

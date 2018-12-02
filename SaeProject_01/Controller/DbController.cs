@@ -12,21 +12,19 @@ namespace SaeProject_01.Controller
 {
     class DbController
     {
+        // User aus Datenbank lesen und zurückgeben
         public User GetUser(string UserName)
         {
-            UserTableAdapter context = new UserTableAdapter();
+            var context = new UserTableAdapter();
             var Data = context.GetData();
-            var User = Data.Where(x => x.Username.Equals(UserName)).FirstOrDefault();
-            if(User == null)
-            {
-                return null;
-            }
-            return new User(User.Username, User.Passwort, true);
+            var User = Data.FirstOrDefault(x => x.Username.Equals(UserName));
+            return User == null ? null : new User(User.Username, User.Passwort, true);
         }
 
+        // User in Datenbank speichern
         public void SetUser(User user)
         {
-            UserTableAdapter context = new UserTableAdapter();
+            var context = new UserTableAdapter();
             var Data = context.InsertQuery(user.UserName, user.Passwort);
         }
     }
