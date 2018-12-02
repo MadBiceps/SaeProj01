@@ -1,0 +1,15 @@
+﻿<Window x:Class="SaeProject_01.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525" Background="#FF1482C7" ResizeMode="NoResize">
+    <Grid>
+        <Image HorizontalAlignment="Left" Height="222" Margin="10,46,0,0" VerticalAlignment="Top" Width="222" Source="Assets/monitor-2004457_1280.png"/>
+        <Button x:Name="butn_Anmelden" Content="Anmelden" HorizontalAlignment="Left" Margin="311,252,0,39.8" VerticalAlignment="Center" Width="169" Background="White" Foreground="#FF1482C7" BorderBrush="Black" Height="29" FontWeight="Bold" FontSize="18" Click="Button_Click" IsDefault="True"/>
+        <TextBox x:Name="textbox_username" HorizontalAlignment="Left" Height="20" Margin="311,109,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="169" BorderBrush="Black" TextChanged="textbox_username_TextChanged"/>
+        <PasswordBox x:Name="textbox_passwort" HorizontalAlignment="Left" Margin="311,160,0,0" VerticalAlignment="Top" Width="169" Height="20" BorderBrush="Black" PasswordChanged="textbox_passwort_PasswordChanged"/>
+        <Label Content="Passwort" HorizontalAlignment="Left" Margin="311,134,0,0" VerticalAlignment="Top" Width="56" Foreground="White"/>
+        <Label Content="Username" HorizontalAlignment="Left" Margin="311,83,0,0" VerticalAlignment="Top" Width="71" Foreground="White"/>
+        <Label x:Name="label_Registrieren" Content="Registrieren?" HorizontalAlignment="Left" Margin="311,281,0,0" VerticalAlignment="Top" Foreground="White" MouseDown="label_Registrieren_MouseDown"/>
+
+    </Grid>
+</Window>
