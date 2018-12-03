@@ -80,6 +80,9 @@ namespace SaeProject_01
                     ? "Sie sind eingeloggt."
                     : "Ihre Anmeldedaten sind leider falsch.");
                 Console.WriteLine(currentUser.checkUser(db.GetUser(currentUser.UserName)));
+                textbox_username.Text = "";
+                textbox_passwort.Password = "";
+                checkAnmeldeButton();
             }
             else
             {
@@ -89,12 +92,16 @@ namespace SaeProject_01
                 if (!db.SetUser(currentUser))
                 {
                     MessageBox.Show("Der Username wird schon verwendet");
+                    textbox_username.Text = "";
                 }
                 else
                 {
                     MessageBox.Show("Ihr Account wurde erstellt");
                     butn_Anmelden.Content = "Anmelden";
                     label_Registrieren.Content = "Registrieren?";
+                    progressbar_passwort.Visibility = Visibility.Hidden;
+                    label_progress.Visibility = Visibility.Hidden;
+                    img_PwInfo.Visibility = Visibility.Hidden;
                 }
             }
 
@@ -151,13 +158,13 @@ namespace SaeProject_01
             textbox_username.Foreground = textbox_username.Text.Length < 5 ? Brushes.Red : Brushes.Black;
 
             return (textbox_username.Text.Length >= 5) &&
-                   (PasswortScoring.CheckStrength(textbox_passwort.Password) < 2);
+                   (PasswortScoring.CheckStrength(textbox_passwort.Password) > 2);
         }
 
         // Infobox für das Registrierten
         private void img_PwInfo_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            MessageBox.Show("Sie müssen ein Passwort angeben, was so gut ist, das der Balken grün wird");
+            MessageBox.Show("Sie müssen ein Passwort angeben, was so gut ist, das der Balken mindestens wird");
         }
     }
 }

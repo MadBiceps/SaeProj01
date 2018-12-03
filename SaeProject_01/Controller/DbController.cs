@@ -25,7 +25,7 @@ namespace SaeProject_01.Controller
         public bool SetUser(User user)
         {
             var context = new UserTableAdapter();
-            if (GetUser(user.UserName) == null)
+            if (GetUser(user.UserName) != null)
             {
                 return false;
             }
