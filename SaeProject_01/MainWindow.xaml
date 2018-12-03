@@ -10,6 +10,9 @@
         <Label Content="Passwort" HorizontalAlignment="Left" Margin="311,134,0,0" VerticalAlignment="Top" Width="56" Foreground="White"/>
         <Label Content="Username" HorizontalAlignment="Left" Margin="311,83,0,0" VerticalAlignment="Top" Width="71" Foreground="White"/>
         <Label x:Name="label_Registrieren" Content="Registrieren?" HorizontalAlignment="Left" Margin="311,281,0,0" VerticalAlignment="Top" Foreground="White" MouseDown="label_Registrieren_MouseDown"/>
+        <ProgressBar x:Name="progressbar_passwort" HorizontalAlignment="Left" Height="6" Margin="311,195,0,0" VerticalAlignment="Top" Width="169" Maximum="5"/>
+        <Label x:Name="label_progress" Content="Passwort stärke" HorizontalAlignment="Left" Margin="311,175,0,0" VerticalAlignment="Top" Foreground="White"/>
+        <Image x:Name="img_PwInfo" HorizontalAlignment="Left" Height="20" Margin="486,162,0,0" VerticalAlignment="Top" Width="17" Source="Assets/icons8-info-500.png" MouseUp="img_PwInfo_MouseUp"/>
 
     </Grid>
 </Window>

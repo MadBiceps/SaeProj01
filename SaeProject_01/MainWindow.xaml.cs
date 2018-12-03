@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using SaeProject_01.Controller;
 using SaeProject_01.Models;
+using SaeProject_01.Module;
 
 namespace SaeProject_01
 {
@@ -25,18 +27,39 @@ namespace SaeProject_01
         public MainWindow()
         {
             InitializeComponent();
+            progressbar_passwort.Visibility = Visibility.Hidden;
+            label_progress.Visibility = Visibility.Hidden;
+            butn_Anmelden.IsEnabled = checkAnmeldeButton();
+            progressbar_passwort.Foreground = Brushes.Red;
+            img_PwInfo.Visibility = Visibility.Hidden;
         }
 
-        // Färbt den Text rot ein, wenn der Username zu kurz ist.
+        // Ruft eine Funktion auf die überprüft ob die eingabe den regeln entspricht und schaltet dann den button frei
         private void textbox_username_TextChanged(object sender, TextChangedEventArgs e)
         {
-            textbox_username.Foreground = textbox_username.Text.Length < 5 ? Brushes.Red : Brushes.Black;
+            butn_Anmelden.IsEnabled = butn_Anmelden.Content.Equals("Anmelden") ? checkAnmeldeButton() : checkRegisterButton();
         }
 
-        // Färbt den Text rot ein, wenn das Passwort zu kurz ist.
+        // Ruft eine Funktion auf die überprüft ob die eingabe den regeln entspricht und schaltet dann den button frei / Ruft die Passwort scoring funktion auf und zeig es in progressbar an
         private void textbox_passwort_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            textbox_passwort.Foreground = textbox_passwort.Password.Length < 5 ? Brushes.Red : Brushes.Black;
+            var pwStreng = PasswortScoring.CheckStrength(textbox_passwort.Password);
+            butn_Anmelden.IsEnabled = butn_Anmelden.Content.Equals("Anmelden") ? checkAnmeldeButton() : checkRegisterButton();
+            progressbar_passwort.Value = pwStreng;
+            if (pwStreng > 2)
+            {
+                progressbar_passwort.Foreground = Brushes.Red;
+            }
+
+            if (pwStreng < 4 && pwStreng >= 2)
+            {
+                progressbar_passwort.Foreground = Brushes.Yellow;
+            }
+
+            if (pwStreng >= 4)
+            {
+                progressbar_passwort.Foreground = Brushes.Green;
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -62,10 +85,17 @@ namespace SaeProject_01
             {
                 var db = new DbController();
                 var currentUser = new User(textbox_username.Text, textbox_passwort.Password, false);
-                db.SetUser(currentUser);
-                MessageBox.Show("Ihr Account wurde erstellt");
-                butn_Anmelden.Content = "Anmelden";
-                label_Registrieren.Content = "Registrieren?";
+                // Checkt ob es den User schon gibt
+                if (!db.SetUser(currentUser))
+                {
+                    MessageBox.Show("Der Username wird schon verwendet");
+                }
+                else
+                {
+                    MessageBox.Show("Ihr Account wurde erstellt");
+                    butn_Anmelden.Content = "Anmelden";
+                    label_Registrieren.Content = "Registrieren?";
+                }
             }
 
             
@@ -79,12 +109,55 @@ namespace SaeProject_01
             {
                 butn_Anmelden.Content = "Registrieren";
                 label_Registrieren.Content = "Anmelden?";
+                progressbar_passwort.Visibility = Visibility.Visible;
+                label_progress.Visibility = Visibility.Visible;
+                img_PwInfo.Visibility = Visibility.Visible;
             }
             else
             {
                 butn_Anmelden.Content = "Anmelden";
                 label_Registrieren.Content = "Registrieren?";
+                progressbar_passwort.Visibility = Visibility.Hidden;
+                label_progress.Visibility = Visibility.Hidden;
+                img_PwInfo.Visibility = Visibility.Hidden;
             }
+        }
+
+        // Ändert die Farben der eingaben um den User zu zeigen ab wann es richtrig ist 
+        private bool checkAnmeldeButton()
+        {
+            textbox_username.BorderBrush = textbox_username.Text.Length < 5 ? Brushes.Red : Brushes.Black;
+            textbox_username.Foreground = textbox_username.Text.Length < 5 ? Brushes.Red : Brushes.Black;
+            textbox_passwort.Foreground = textbox_passwort.Password.Length < 4 ? Brushes.Red : Brushes.Black;
+            textbox_passwort.BorderBrush = textbox_passwort.Password.Length < 4 ? Brushes.Red : Brushes.Black;
+            return (textbox_username.Text.Length >= 5) && (textbox_passwort.Password.Length >= 5);
+        }
+
+        // Überprüft, ob die eingegeben Daten passen und ob der anmeldebutton freigeschaltet wird
+        private bool checkRegisterButton()
+        {
+            if (PasswortScoring.CheckStrength(textbox_passwort.Password) < 2)
+            {
+                textbox_passwort.Foreground = Brushes.Red;
+                textbox_passwort.BorderBrush = Brushes.Red;
+            }
+            else
+            {
+                textbox_passwort.Foreground = Brushes.Black;
+                textbox_passwort.BorderBrush = Brushes.Black;
+            }
+
+            textbox_username.BorderBrush = textbox_username.Text.Length < 5 ? Brushes.Red : Brushes.Black;
+            textbox_username.Foreground = textbox_username.Text.Length < 5 ? Brushes.Red : Brushes.Black;
+
+            return (textbox_username.Text.Length >= 5) &&
+                   (PasswortScoring.CheckStrength(textbox_passwort.Password) < 2);
+        }
+
+        // Infobox für das Registrierten
+        private void img_PwInfo_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            MessageBox.Show("Sie müssen ein Passwort angeben, was so gut ist, das der Balken grün wird");
         }
     }
 }

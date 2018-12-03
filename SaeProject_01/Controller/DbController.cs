@@ -22,10 +22,16 @@ namespace SaeProject_01.Controller
         }
 
         // User in Datenbank speichern
-        public void SetUser(User user)
+        public bool SetUser(User user)
         {
             var context = new UserTableAdapter();
+            if (GetUser(user.UserName) == null)
+            {
+                return false;
+            }
+
             var Data = context.InsertQuery(user.UserName, user.Passwort);
+            return true;
         }
     }
 }
